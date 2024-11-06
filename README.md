@@ -59,7 +59,7 @@ Waiting for another player to connect...
 
 7|8|9
 
-Your turn
+Your turn. Select position (1-9):
 
 1
 
@@ -85,7 +85,7 @@ X|O|3
 
 7|8|9
 
-Select position (1-9):
+Your turn. Select position (1-9):
 
 4
 
@@ -111,7 +111,7 @@ X|5|6
 
 7|8|9
 
-Select position (1-9):
+Your turn. Select position (1-9):
 
 7
 
@@ -149,7 +149,7 @@ X|2|3
 
 7|8|9
 
-Select position (1-9):
+Your turn. Select position (1-9):
 
 2
 
@@ -175,7 +175,8 @@ X|5|6
 
 7|8|9
 
-Select position (1-9):
+Your turn. Select position (1-9):
+
 3
 
 X|O|O
