@@ -12,6 +12,7 @@ public:
     }
 
     void run() {
+        //Создание сервера
         int server_fd = socket(AF_INET, SOCK_STREAM, 0);
         if (server_fd == -1) {
             std::cerr << "Error creating socket\n";
@@ -52,6 +53,7 @@ public:
         th2.join();
     }
 
+    //Получение сообщения с номером хода от игрока
     void sending(int player, int message) {
         if (currentPlayer != player) {
             std::cout<<"currentPlayer = "<<currentPlayer<<std::endl;
@@ -60,11 +62,12 @@ public:
 
             std::cout<<displayBoard();
             char marker = currentPlayer == 0 ? 'X' : 'O';
+            //Проверка и постановка хода игрока
             if (!placeMarker(message, marker)) {
                 sendMessage(currentPlayer, "Illegal move. Try again.");
-                //continue
                 return;
             }
+            //Проверка выигрыша
             if (checkWin()) {
                 std::string winMessage = "Player ";
                 winMessage += (currentPlayer == 0 ? "1" : "2");
@@ -72,28 +75,27 @@ public:
                 sendToAll(winMessage);
                 return;
             }
+            //Проверка ничьи
             if (draw()) {
                 std::string winMessage = "Draw!";
                 sendToAll(winMessage);
-
                 return;
             }
+
             sendToAll(displayBoard());
             sendMessage(currentPlayer, "Waiting for the other player to move");
-            currentPlayer = 1 - currentPlayer;
+            currentPlayer = 1 - currentPlayer; //смена хода игрока
 
             sendMessage(currentPlayer,"Select position (1-9):");
         }
     }
 
+    //Функция для получения сообщения от пользователя в номером id
     void receiving(int id) {
         int position;
         while (true) {
-
             recv(player_sockets[id], &position, sizeof(position), 0);
-
             sending(id,position);
-
         }
     }
 
@@ -104,12 +106,14 @@ private:
 
     std::vector<char> board;  // Игровое поле, представленное вектором
 
+    //Отправление сообщения player
     void sendMessage(int player, std::string message) {
         int length = message.size();
         send(player_sockets[player], &length, sizeof(length), 0);
         send(player_sockets[player], message.c_str(), length, 0);
     }
 
+    //Проверка на ничью
     bool draw() {
         for (auto ch: board) {
             if (ch != 'O' && ch != 'X') {
@@ -119,6 +123,7 @@ private:
         return true;
     }
 
+    //Отправка сообщения message всем игрокам
     void sendToAll(const std::string &message) {
         sendMessage(currentPlayer,message);
         int cur=1-currentPlayer;
@@ -150,7 +155,7 @@ private:
         return false; // Выигрышная комбинация не найдена
     }
 
-    // Функция для размещения символа на поле
+    // Функция для проверки и размещения символа на поле
     bool placeMarker(int position, char marker) {
         if (position < 1 || position > 9 || board[position - 1] == 'X' || board[position - 1] == 'O') {
             std::cout << "Illegal move. Try again." << std::endl;
@@ -177,8 +182,15 @@ private:
     }
 };
 
-int main() {
-    TicTacToeServer server(12345);
-    server.run();
+int main(int argc, char *argv[]) {
+    if (argc>1){
+        int port=std::atoi(argv[1]);
+        TicTacToeServer server(port);
+        server.run();
+    }
+    else{
+        std::cerr<<"No valid port";
+        return 1;
+    }
     return 0;
 }
