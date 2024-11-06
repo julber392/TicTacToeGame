@@ -44,7 +44,7 @@ public:
         std::thread th2(&TicTacToeServer::receiving, this, 1);
 
         sendToAll(displayBoard());
-        sendMessage(0,"Your turn");
+        sendMessage(0,"Your turn. Select position (1-9):");
         while (true){
 
         }
@@ -86,7 +86,7 @@ public:
             sendMessage(currentPlayer, "Waiting for the other player to move");
             currentPlayer = 1 - currentPlayer; //смена хода игрока
 
-            sendMessage(currentPlayer,"Select position (1-9):");
+            sendMessage(currentPlayer,"Your turn. Select position (1-9):");
         }
     }
 
